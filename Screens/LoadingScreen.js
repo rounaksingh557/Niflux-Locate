@@ -5,7 +5,7 @@
 
 // Modules Import
 import React from "react";
-import { ActivityIndicator, View, Image, StyleSheet } from "react-native";
+import { ActivityIndicator, View, Image, Text, StyleSheet } from "react-native";
 
 /**
  * @returns The Loading Screen
@@ -18,6 +18,7 @@ export default function LoadingScreen() {
         source={require("../assets/Niflux-Logo.png")}
         style={styles.nifluxImage}
       />
+      <Text style={styles.mainTitle}>Niflux Locate</Text>
       <ActivityIndicator size={100} style={styles.activityBar} color={"red"} />
     </View>
   );
@@ -35,6 +36,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "30%",
     width: "100%",
+  },
+  mainTitle: {
+    fontWeight: "bold",
+    fontSize: 30,
+    paddingTop: 80,
   },
   activityBar: {
     position: "absolute",

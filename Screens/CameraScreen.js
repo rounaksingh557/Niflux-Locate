@@ -5,7 +5,7 @@
 
 // Modules Import
 import React, { useEffect, useState, useRef } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Alert } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { shareAsync } from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
@@ -55,7 +55,6 @@ export default function CameraScreen() {
 
     let newPhoto = await cameraRef.current.takePictureAsync(options);
     setPhoto(newPhoto);
-    console.log(newPhoto);
   };
 
   /**
@@ -63,13 +62,21 @@ export default function CameraScreen() {
    */
   const savePhoto = async () => {
     if (photo) {
-      try {
-        await MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
-          setPhoto(undefined);
-        });
-      } catch (error) {
-        console.warn(error);
+      if (hasMediaLibraryPermission) {
+        try {
+          await MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
+            setPhoto(undefined);
+          });
+        } catch (error) {
+          console.warn(error);
+        }
       }
+    } else {
+      Alert.alert(
+        "Don't have the required permission",
+        "please allow media access. Give permission in settings",
+        [{ text: "Cancel", style: "cancel" }, { text: "OK" }]
+      );
     }
   };
 
@@ -177,6 +184,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 50,
   },
 });
-
-// Main - https://www.youtube.com/watch?v=4WPjWK0MYMI
-// Second - https://www.youtube.com/watch?v=9EoKurp6V0I
