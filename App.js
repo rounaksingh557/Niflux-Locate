@@ -7,7 +7,7 @@
 import { StatusBar } from "expo-status-bar";
 
 // Files Import
-import LoadingScreen from "./Screens/LoadingScreen";
+import CameraScreen from "./Screens/CameraScreen";
 
 /**
  * @returns The Main App
@@ -16,7 +16,7 @@ export default function App() {
   return (
     <>
       <StatusBar style="dark" />
-      <LoadingScreen />
+      <CameraScreen />
     </>
   );
 }

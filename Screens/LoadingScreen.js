@@ -9,6 +9,7 @@ import { ActivityIndicator, View, Image, StyleSheet } from "react-native";
 
 /**
  * @returns The Loading Screen
+ * @description This is a loading screen which has a activity indicator and a image.
  */
 export default function LoadingScreen() {
   return (
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
   nifluxImage: {
     top: 150,
     position: "absolute",
-    height: "50%",
+    height: "30%",
     width: "100%",
   },
   activityBar: {
