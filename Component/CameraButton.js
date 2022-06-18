@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   mainButton: {
     width: 70,
     height: 70,
-    bottom: 0,
+    bottom: 125,
     borderRadius: 50,
     backgroundColor: "#fff",
     flexDirection: "row",

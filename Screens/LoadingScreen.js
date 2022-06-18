@@ -15,7 +15,7 @@ export default function LoadingScreen() {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/Niflux-Logo.png")}
+        source={require("../assets/Images/Niflux-logo-main.jpg")}
         style={styles.nifluxImage}
       />
       <Text style={styles.mainTitle}>Niflux Locate</Text>
@@ -38,9 +38,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   mainTitle: {
-    fontWeight: "bold",
-    fontSize: 30,
-    paddingTop: 80,
+    fontFamily: "TaiHeritageBold",
+    fontSize: 40,
+    top: 80,
   },
   activityBar: {
     position: "absolute",

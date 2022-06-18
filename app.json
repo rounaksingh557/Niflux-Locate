@@ -4,10 +4,10 @@
     "slug": "niflux-locate",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Niflux-Logo.png",
+    "icon": "./assets/Images/Niflux-Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/Images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -30,12 +30,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Niflux-Logo.png",
+        "foregroundImage": "./assets/Images/Niflux-Logo.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/Images/Niflux-Logo.png"
     }
   }
 }
