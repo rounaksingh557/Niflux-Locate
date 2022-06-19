@@ -19,7 +19,7 @@ import Button from "../Component/Button";
 
 /**
  * @returns a camera screen
- * @requires latitude, longitude, city, country, district, isoCountryCode, name, postalCode, region
+ * @requires latitude, longitude, city, country, district, isoCountryCode, name, postalCode, region, Date, Time
  * @description This screen takes a photo and then save and share it.
  */
 export default function CameraAndDataScreen({
@@ -32,9 +32,11 @@ export default function CameraAndDataScreen({
   name,
   postalCode,
   region,
+  Date,
+  Time,
 }) {
   // Reference declaration
-  let cameraRef = useRef();
+  let cameraRef = useRef(null);
 
   // States declaration
   const [hasCameraPermission, setHasCameraPermission] = useState();
@@ -202,6 +204,11 @@ export default function CameraAndDataScreen({
           <View style={styles.coordinateHolderTwo}>
             <Text style={styles.coordinate}>Long {longitude}</Text>
           </View>
+          <View style={styles.dateContainer}>
+            <Text style={styles.dateAndTimeInfo}>
+              {Date} {Time} {isoCountryCode}
+            </Text>
+          </View>
         </BlurView>
       </>
     );
@@ -280,6 +287,15 @@ const styles = StyleSheet.create({
     left: 10,
   },
   coordinate: {
+    fontFamily: "TaiHeritageRegular",
+    color: "white",
+    fontSize: 13,
+  },
+  dateContainer: {
+    bottom: 55,
+    left: 10,
+  },
+  dateAndTimeInfo: {
     fontFamily: "TaiHeritageRegular",
     color: "white",
     fontSize: 13,

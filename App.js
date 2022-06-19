@@ -49,6 +49,7 @@ export default function App() {
     return (
       <>
         <StatusBar style="auto" />
+        {/* Service mounted first */}
         <GetLocationInfoService />
       </>
     );

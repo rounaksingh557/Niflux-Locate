@@ -11,7 +11,6 @@ import * as Location from "expo-location";
 // Files Import
 import CameraAndDataScreen from "../Screens/CameraAndDataScreen";
 import LoadingScreen from "../Screens/LoadingScreen";
-import axios from "axios";
 
 /**
  * @returns React Component with GeoLocation Service.
@@ -28,6 +27,8 @@ export default function GetLocationInfoService() {
   const [name, setName] = useState(null);
   const [postalCode, setPostalCode] = useState(null);
   const [region, setRegion] = useState(null);
+  const [today, setToday] = useState(null);
+  const [time, setTime] = useState(null);
 
   // Example of location fetched
   const LocationValue = {
@@ -71,6 +72,27 @@ export default function GetLocationInfoService() {
     return extractedValue;
   }
 
+  /**
+   *
+   * @param {*} time the time to be converted
+   * @returns the converted time
+   * @description converts the 24 hour format to 12 hour format
+   */
+  function tConvert(time) {
+    // Check correct time format and split into components
+    time = time
+      .toString()
+      .match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+    if (time.length > 1) {
+      // If time format correct
+      time = time.slice(1); // Remove full string match value
+      time[5] = +time[0] < 12 ? "AM" : "PM"; // Set AM/PM
+      time[0] = +time[0] % 12 || 12; // Adjust hours
+    }
+    return time.join(""); // return adjusted time or original string
+  }
+
   useEffect(() => {
     (async () => {
       // Permission Request
@@ -97,6 +119,13 @@ export default function GetLocationInfoService() {
       const postalCode = extractValue(fixedLocation, "postalCode");
       const region = extractValue(fixedLocation, "region");
 
+      // Fetching today's date and time
+      let today = new Date().toLocaleDateString();
+      let time = new Date().toLocaleTimeString();
+
+      // Converting time format
+      let convertedTo12HourFormatTime = tConvert(time);
+
       // Settings Values
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
@@ -107,6 +136,8 @@ export default function GetLocationInfoService() {
       setName(name);
       setPostalCode(postalCode);
       setRegion(region);
+      setToday(today);
+      setTime(convertedTo12HourFormatTime);
     })();
   }, []);
 
@@ -122,6 +153,8 @@ export default function GetLocationInfoService() {
         name={name}
         region={region}
         postalCode={postalCode}
+        Date={today}
+        Time={time}
       />
     );
   } else {
