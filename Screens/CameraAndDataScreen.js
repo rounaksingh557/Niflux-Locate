@@ -4,13 +4,14 @@
  */
 
 // Modules Import
-import React, { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, Image, Alert } from "react-native";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { View, Text, StyleSheet, Image, Alert, PixelRatio } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { shareAsync } from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
 import MapView, { Marker } from "react-native-maps";
-import { BlurView } from "expo-blur";
+import ViewShot from "react-native-view-shot";
+import { captureRef } from "react-native-view-shot";
 
 // Files Import
 import LoadingScreen from "./LoadingScreen";
@@ -37,6 +38,10 @@ export default function CameraAndDataScreen({
 }) {
   // Reference declaration
   let cameraRef = useRef(null);
+  let captureComponent = useRef(null);
+  let mapViewPhoto = useRef(null);
+
+  // variable for mapView
 
   // States declaration
   const [hasCameraPermission, setHasCameraPermission] = useState();
@@ -44,6 +49,8 @@ export default function CameraAndDataScreen({
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const [photo, setPhoto] = useState();
+  const [dataContainerSnapShot, setDataContainerSnapShot] = useState();
+  const [mapViewSnapShot, setMapViewSnapShot] = useState();
 
   useEffect(() => {
     const askForPermission = async () => {
@@ -56,7 +63,41 @@ export default function CameraAndDataScreen({
       setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     };
     askForPermission();
+    click();
   }, []);
+
+  /**
+   * @description This function is used to take a snapshot of dataContainer and MapView.
+   */
+  const click = async () => {
+    if (captureComponent && mapViewPhoto && mapViewPhoto.current !== null) {
+      // Capturing the data container
+      // For HD resolution
+      const targetPixelCount = 100;
+      // Fetching the pixel ratio of the device
+      const pixelRatio = PixelRatio.get();
+      // pixels * pixelratio = targetPixelCount, so pixels = targetPixelCount / pixelRatio
+      const pixels = targetPixelCount / pixelRatio;
+      // Taking the snapshot of data container
+      const result = await captureRef(captureComponent, {
+        result: "base64",
+        height: pixels,
+        width: pixels,
+        quality: 1,
+        format: "jpg",
+      });
+      // Setting the snapshot of data container to the state
+      setDataContainerSnapShot(result);
+
+      // Capturing the map view
+      const snapshot = await mapViewPhoto.current.takeSnapshot({
+        format: "jpg",
+        quality: 1,
+        result: "base64",
+      });
+      setMapViewSnapShot(snapshot);
+    }
+  };
 
   /**
    * @description function to the take the pictures
@@ -181,10 +222,12 @@ export default function CameraAndDataScreen({
             </View>
           )}
         </View>
-        <MapView region={mapRegion} style={styles.map}>
+
+        <MapView region={mapRegion} style={styles.map} ref={mapViewPhoto}>
           <Marker coordinate={mapRegion} title="Marker" />
         </MapView>
-        <BlurView intensity={100} tint="dark" style={styles.dataContainer}>
+
+        <ViewShot style={styles.dataContainer} ref={captureComponent}>
           <Text style={styles.capitalInfo}>
             {city}, {district}, {region}
           </Text>
@@ -209,7 +252,7 @@ export default function CameraAndDataScreen({
               {Date} {Time} {isoCountryCode}
             </Text>
           </View>
-        </BlurView>
+        </ViewShot>
       </>
     );
   }
@@ -245,7 +288,7 @@ const styles = StyleSheet.create({
   },
   map: {
     position: "absolute",
-    width: 110,
+    width: "28%",
     height: 130,
     borderRadius: 20,
     bottom: 5,
@@ -253,11 +296,13 @@ const styles = StyleSheet.create({
   },
   dataContainer: {
     position: "absolute",
-    width: 235,
+    width: "68%",
     height: 130,
     borderRadius: 20,
     bottom: 5,
     right: 5,
+    opacity: 0.7,
+    backgroundColor: "black",
   },
   capitalInfo: {
     fontFamily: "TaiHeritageBold",
