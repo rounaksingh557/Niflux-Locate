@@ -15,8 +15,8 @@ import { captureRef } from "react-native-view-shot";
 
 // Files Import
 import LoadingScreen from "./LoadingScreen";
-import CameraButton from "../Component/CameraButton";
-import Button from "../Component/Button";
+import CameraButton from "../Components/CameraButton";
+import Button from "../Components/Button";
 
 /**
  * @returns a camera screen
