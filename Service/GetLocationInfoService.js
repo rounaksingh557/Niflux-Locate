@@ -5,7 +5,6 @@
 
 // Modules Import
 import { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
 import * as Location from "expo-location";
 
 // Files Import
@@ -78,7 +77,7 @@ export default function GetLocationInfoService() {
    * @returns the converted time
    * @description converts the 24 hour format to 12 hour format
    */
-  function tConvert(time) {
+  const tConvert = (time) => {
     // Check correct time format and split into components
     time = time
       .toString()
@@ -91,7 +90,7 @@ export default function GetLocationInfoService() {
       time[0] = +time[0] % 12 || 12; // Adjust hours
     }
     return time.join(""); // return adjusted time or original string
-  }
+  };
 
   useEffect(() => {
     (async () => {
@@ -161,12 +160,3 @@ export default function GetLocationInfoService() {
     return <LoadingScreen />;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

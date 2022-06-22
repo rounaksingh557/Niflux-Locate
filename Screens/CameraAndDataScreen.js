@@ -4,7 +4,7 @@
  */
 
 // Modules Import
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Image, Alert, PixelRatio } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { shareAsync } from "expo-sharing";
@@ -44,13 +44,14 @@ export default function CameraAndDataScreen({
   // variable for mapView
 
   // States declaration
-  const [hasCameraPermission, setHasCameraPermission] = useState();
-  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] =
+    useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const [photo, setPhoto] = useState();
-  const [dataContainerSnapShot, setDataContainerSnapShot] = useState();
-  const [mapViewSnapShot, setMapViewSnapShot] = useState();
+  const [photo, setPhoto] = useState(null);
+  const [dataContainerSnapShot, setDataContainerSnapShot] = useState(null);
+  const [mapViewSnapShot, setMapViewSnapShot] = useState(null);
 
   useEffect(() => {
     const askForPermission = async () => {
@@ -117,11 +118,11 @@ export default function CameraAndDataScreen({
    * @description It saves the picture in the directory of the device
    */
   const savePhoto = async () => {
-    if (photo) {
-      if (hasMediaLibraryPermission) {
+    if (photo != null) {
+      if (hasMediaLibraryPermission != null) {
         try {
           await MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
-            setPhoto(undefined);
+            setPhoto(null);
           });
         } catch (error) {
           console.warn(error);
@@ -141,7 +142,7 @@ export default function CameraAndDataScreen({
    */
   const sharePhoto = () => {
     shareAsync(photo.uri).then(() => {
-      setPhoto(undefined);
+      setPhoto(null);
     });
   };
 
@@ -153,7 +154,7 @@ export default function CameraAndDataScreen({
     longitudeDelta: 0.0421,
   };
 
-  if (hasCameraPermission === undefined) {
+  if (hasCameraPermission === null) {
     return <LoadingScreen />;
   } else if (!hasCameraPermission) {
     return (
