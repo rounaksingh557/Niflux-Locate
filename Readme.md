@@ -17,8 +17,6 @@
 
 - Final Build Screenshot will be added after sending to production
 
-- See [wiki](https://github.com/rounaksingh557/Niflux-Locate/wiki) page for screenshots 
-
 - Please visit [security](https://github.com/rounaksingh557/Niflux-Locate/security/policy) section for more information about security
 
 - check contributing.md [here](https://github.com/rounaksingh557/Niflux-Locate/blob/master/CONTRIBUTING.md)
@@ -37,7 +35,7 @@
   <h3 align="center">Niflux Locate</h3>
 
   <p align="center">
-    A react native app made for health care purpose.
+    A react native app made for geo location sharing.
     <br />
     <a href="https://github.com/rounaksingh557/Niflux-Locate#readme"><strong>Explore the docs »</strong></a>
     <br />
