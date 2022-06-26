@@ -66,7 +66,7 @@ export default function GetLocationInfoService() {
    * @returns the extracted value
    * @description take a array an then fetch value from the object inside the array
    */
-  function extractValue(arr, prop) {
+  const extractValue = (arr, prop) => {
     let extractedValue = arr.map((item) => item[prop]);
     return extractedValue;
   }
