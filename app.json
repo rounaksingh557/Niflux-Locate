@@ -45,7 +45,12 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.CAMERA"
       ],
-      "package": "com.rounakexpo.nifluxlocate"
+      "package": "com.rounakexpo.nifluxlocate",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDKxmdg4iLrRiHCrj__WVc38Zf53eUuamE"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/Images/Niflux-Logo.png"
