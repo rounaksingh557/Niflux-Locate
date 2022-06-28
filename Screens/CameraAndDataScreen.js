@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   dataContainer: {
     position: "absolute",
     width: "68%",
-    height: 130,
+    height: 140,
     borderRadius: 20,
     bottom: 5,
     right: 5,
@@ -354,16 +354,16 @@ const styles = StyleSheet.create({
   },
   discreetHolder: {
     bottom: 12,
+    left: 5,
   },
   discreetHolderTwo: {
     bottom: 25,
-    right: 71,
+    left: 5,
   },
   discreetInfo: {
     fontFamily: "TaiHeritageRegular",
     color: "white",
-    alignSelf: "center",
-    fontSize: 13,
+    fontSize: 12,
   },
   coordinateHolder: {
     bottom: 35,
