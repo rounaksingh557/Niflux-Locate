@@ -3,6 +3,8 @@
  * @license MIT
  */
 
+// React Native View Shot Help Video: "https://www.youtube.com/watch?v=CEB0QepurQY"
+
 // Modules Import
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Image, Alert, PixelRatio } from "react-native";
@@ -38,8 +40,7 @@ export default function CameraAndDataScreen({
 }) {
   // Reference declaration
   let cameraRef = useRef(null);
-  let captureComponent = useRef(null);
-  let mapViewPhoto = useRef(null);
+  let finalImage = useRef(null);
 
   // variable for mapView
 
@@ -47,11 +48,10 @@ export default function CameraAndDataScreen({
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] =
     useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [type, setType] = useState(Camera.Constants.Type.front);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const [photo, setPhoto] = useState(null);
-  const [dataContainerSnapShot, setDataContainerSnapShot] = useState(null);
-  const [mapViewSnapShot, setMapViewSnapShot] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const askForPermission = async () => {
@@ -64,41 +64,7 @@ export default function CameraAndDataScreen({
       setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     };
     askForPermission();
-    click();
   }, []);
-
-  /**
-   * @description This function is used to take a snapshot of dataContainer and MapView.
-   */
-  const click = async () => {
-    if (captureComponent && mapViewPhoto && mapViewPhoto.current !== null) {
-      // Capturing the data container
-      // For HD resolution
-      const targetPixelCount = 100;
-      // Fetching the pixel ratio of the device
-      const pixelRatio = PixelRatio.get();
-      // pixels * pixelratio = targetPixelCount, so pixels = targetPixelCount / pixelRatio
-      const pixels = targetPixelCount / pixelRatio;
-      // Taking the snapshot of data container
-      const result = await captureRef(captureComponent, {
-        result: "base64",
-        height: pixels,
-        width: pixels,
-        quality: 1,
-        format: "jpg",
-      });
-      // Setting the snapshot of data container to the state
-      setDataContainerSnapShot(result);
-
-      // Capturing the map view
-      const snapshot = await mapViewPhoto.current.takeSnapshot({
-        format: "jpg",
-        quality: 1,
-        result: "base64",
-      });
-      setMapViewSnapShot(snapshot);
-    }
-  };
 
   /**
    * @description function to the take the pictures
@@ -121,11 +87,23 @@ export default function CameraAndDataScreen({
     if (photo != null) {
       if (hasMediaLibraryPermission != null) {
         try {
-          await MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
-            setPhoto(null);
-          });
+          if (finalImage !== null) {
+            // Taking the snapshot of preview Image
+            const result = await captureRef(finalImage, {
+              result: "tmpfile",
+              quality: 1,
+              format: "jpg",
+            });
+
+            // Storing result
+            if (result !== null) {
+              await MediaLibrary.saveToLibraryAsync(result).then(() => {
+                setPhoto(null);
+              });
+            }
+          }
         } catch (error) {
-          console.warn(error);
+          setError(error);
         }
       }
     } else {
@@ -140,10 +118,21 @@ export default function CameraAndDataScreen({
   /**
    * @description Share the image
    */
-  const sharePhoto = () => {
-    shareAsync(photo.uri).then(() => {
-      setPhoto(null);
-    });
+  const sharePhoto = async () => {
+    if (finalImage !== null) {
+      // Taking the snapshot of preview Image
+      const result = await captureRef(finalImage, {
+        result: "tmpfile",
+        quality: 1,
+        format: "jpg",
+      });
+
+      // Sharing result
+      if (result !== null) {
+        shareAsync(result);
+        setPhoto(null);
+      }
+    }
   };
 
   // Used by MapView and MapMarker
@@ -200,7 +189,46 @@ export default function CameraAndDataScreen({
               </View>
             </Camera>
           ) : (
-            <Image source={{ uri: photo.uri }} style={styles.cameraContainer} />
+            <ViewShot
+              style={{ flex: 1, height: "100%", width: "100%" }}
+              ref={finalImage}
+            >
+              <Image
+                source={{ uri: photo.uri }}
+                style={styles.cameraContainer}
+              />
+
+              <MapView region={mapRegion} style={styles.map}>
+                <Marker coordinate={mapRegion} title="Marker" />
+              </MapView>
+
+              <View style={styles.dataContainer}>
+                <Text style={styles.capitalInfo}>
+                  {city}, {district}, {region}
+                </Text>
+                <View style={styles.discreetHolder}>
+                  <Text style={styles.discreetInfo}>
+                    {name}, {district}, {city}, {region}
+                  </Text>
+                </View>
+                <View style={styles.discreetHolderTwo}>
+                  <Text style={styles.discreetInfo}>
+                    {postalCode}, {country}
+                  </Text>
+                </View>
+                <View style={styles.coordinateHolder}>
+                  <Text style={styles.coordinate}>Lat {latitude}</Text>
+                </View>
+                <View style={styles.coordinateHolderTwo}>
+                  <Text style={styles.coordinate}>Long {longitude}</Text>
+                </View>
+                <View style={styles.dateContainer}>
+                  <Text style={styles.dateAndTimeInfo}>
+                    {Date} {Time} {isoCountryCode}
+                  </Text>
+                </View>
+              </View>
+            </ViewShot>
           )}
 
           {!photo ? (
@@ -223,37 +251,40 @@ export default function CameraAndDataScreen({
             </View>
           )}
         </View>
+        {!photo ? (
+          <>
+            <MapView region={mapRegion} style={styles.map}>
+              <Marker coordinate={mapRegion} title="Marker" />
+            </MapView>
 
-        <MapView region={mapRegion} style={styles.map} ref={mapViewPhoto}>
-          <Marker coordinate={mapRegion} title="Marker" />
-        </MapView>
-
-        <ViewShot style={styles.dataContainer} ref={captureComponent}>
-          <Text style={styles.capitalInfo}>
-            {city}, {district}, {region}
-          </Text>
-          <View style={styles.discreetHolder}>
-            <Text style={styles.discreetInfo}>
-              {name}, {district}, {city}, {region}
-            </Text>
-          </View>
-          <View style={styles.discreetHolderTwo}>
-            <Text style={styles.discreetInfo}>
-              {postalCode}, {country}
-            </Text>
-          </View>
-          <View style={styles.coordinateHolder}>
-            <Text style={styles.coordinate}>Lat {latitude}</Text>
-          </View>
-          <View style={styles.coordinateHolderTwo}>
-            <Text style={styles.coordinate}>Long {longitude}</Text>
-          </View>
-          <View style={styles.dateContainer}>
-            <Text style={styles.dateAndTimeInfo}>
-              {Date} {Time} {isoCountryCode}
-            </Text>
-          </View>
-        </ViewShot>
+            <View style={styles.dataContainer}>
+              <Text style={styles.capitalInfo}>
+                {city}, {district}, {region}
+              </Text>
+              <View style={styles.discreetHolder}>
+                <Text style={styles.discreetInfo}>
+                  {name}, {district}, {city}, {region}
+                </Text>
+              </View>
+              <View style={styles.discreetHolderTwo}>
+                <Text style={styles.discreetInfo}>
+                  {postalCode}, {country}
+                </Text>
+              </View>
+              <View style={styles.coordinateHolder}>
+                <Text style={styles.coordinate}>Lat {latitude}</Text>
+              </View>
+              <View style={styles.coordinateHolderTwo}>
+                <Text style={styles.coordinate}>Long {longitude}</Text>
+              </View>
+              <View style={styles.dateContainer}>
+                <Text style={styles.dateAndTimeInfo}>
+                  {Date} {Time} {isoCountryCode}
+                </Text>
+              </View>
+            </View>
+          </>
+        ) : null}
       </>
     );
   }
