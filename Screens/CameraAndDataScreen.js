@@ -16,6 +16,7 @@ import ViewShot from "react-native-view-shot";
 import { captureRef } from "react-native-view-shot";
 
 // Files Import
+import LoadingScreen from "../Screens/LoadingScreen";
 import CameraButton from "../Components/CameraButton";
 import Button from "../Components/Button";
 
@@ -141,8 +142,9 @@ export default function CameraAndDataScreen({
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   };
-
-  if (!hasCameraPermission) {
+  if (hasCameraPermission === null) {
+    return <LoadingScreen />;
+  } else if (hasCameraPermission === false) {
     return (
       <View
         style={{
