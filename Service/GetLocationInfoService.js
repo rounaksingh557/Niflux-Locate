@@ -8,8 +8,8 @@ import { useState, useEffect } from "react";
 import * as Location from "expo-location";
 
 // Files Import
-import CameraAndDataScreen from "../Screens/CameraAndDataScreen";
 import LoadingScreen from "../Screens/LoadingScreen";
+import CameraAndDataScreen from "../Screens/CameraAndDataScreen";
 
 /**
  * @returns React Component with GeoLocation Service.
@@ -69,7 +69,7 @@ export default function GetLocationInfoService() {
   const extractValue = (arr, prop) => {
     let extractedValue = arr.map((item) => item[prop]);
     return extractedValue;
-  }
+  };
 
   /**
    *
@@ -140,7 +140,9 @@ export default function GetLocationInfoService() {
     })();
   }, []);
 
-  if (latitude && longitude != null) {
+  if (latitude === null && longitude === null) {
+    return <LoadingScreen />;
+  } else {
     return (
       <CameraAndDataScreen
         latitude={latitude}
@@ -156,7 +158,5 @@ export default function GetLocationInfoService() {
         Time={time}
       />
     );
-  } else {
-    return <LoadingScreen />;
   }
 }
