@@ -24,13 +24,19 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access to your camera",
         "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos"
-      }
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyC4shVfCWvRSP6joaPdgQbwfmrATPPPqcw"
+      },
+      "bundleIdentifier": "com.rounakexpo.nifluxlocate"
     },
     "android": {
       "adaptiveIcon": {
